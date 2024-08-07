@@ -32,15 +32,16 @@ const resolvers = {
 
             return { token, user };
         },
-        saveBook: async (parent, { input }, context) => {
-            const user = await User.findById(context._id);
+        saveBook: async (parent, { userId, input }, context) => {
+            const user = await User.findById(userId);
+            if (user.savedBooks === null) user.savedBooks = [];
             user.savedBooks.push(input);
             user.save();
 
             return user;
         },
-        removeBook: async (parent, { bookId }, context) => {
-            let user = await User.findById(context._id);
+        removeBook: async (parent, { userId, bookId }, context) => {
+            let user = await User.findById(userId);
             user.savedBooks = user.savedBooks.filter(e => e.bookId !== bookId);
             user.save();
 
